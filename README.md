@@ -1,7 +1,6 @@
 # Information-Theoretic Analysis of Positional Encoding Strategies in Vision Transformers
 
-[![arXiv](https://img.shields.io/badge/arXiv-XXXX.XXXXX-b31b1b.svg)](https://arxiv.org/abs/XXXX.XXXXX)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19063156.svg)](https://doi.org/10.5281/zenodo.19063156)
 
 Official implementation for the paper:
 
