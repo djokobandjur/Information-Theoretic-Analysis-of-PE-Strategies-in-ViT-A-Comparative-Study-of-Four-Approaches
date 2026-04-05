@@ -170,7 +170,7 @@ tqdm
   title={Information-Theoretic Analysis of Positional Encoding Strategies 
          in Vision Transformers: A Comparative Study of Four Approaches},
   author={[Author Name]},
-  journal={arXiv preprint arXiv:XXXX.XXXXX},
+  journal={},
   year={2026}
 }
 ```
