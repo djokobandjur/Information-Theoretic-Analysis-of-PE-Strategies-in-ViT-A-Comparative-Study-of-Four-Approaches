@@ -16,8 +16,8 @@ PE types:   Sinusoidal, Learned, RoPE, ALiBi
 Requirements:
     pip install torch torchvision timm matplotlib numpy scipy scikit-learn tqdm
 
-Hardware:   1x H100/A100 GPU (~6-7h per run)
-            Total: 12 runs × ~6h = ~72 GPU-hours
+Hardware:   1x H100/A100 GPU (~2-3h per run)
+            Total: 12 runs × ~3h = ~36 GPU-hours
 
 Usage:
     python full_scale_experiment.py --data_dir /path/to/imagenet100 --output_dir ./results
@@ -1045,6 +1045,16 @@ def noise_ablation(model, val_loader, device, pe_type):
 def plot_training_curves(all_histories, output_dir):
     """Plot training curves for all PE types (averaged over seeds)."""
     import matplotlib.pyplot as plt
+    
+    plt.rcParams.update({
+    'font.size': 14,          # Osnovna veličina (brojevi na osama)
+    'axes.labelsize': 14,     # Veličina za X i Y labele (npr. Epoch, Loss)
+    'axes.titlesize': 15,     # Veličina za naslove podgrafika
+    'figure.titlesize': 18,   # Veličina za glavne naslove (suptitle)
+    'legend.fontsize': 12,    # Veličina fonta u legendama
+    'figure.dpi': 150,        # Možeš odmah da podesiš i podrazumevani kvalitet slika
+    'savefig.bbox': 'tight'   # Automatski seče prazan prostor oko slika pri čuvanju
+    })
 
     COLOR_MAP = {
         'learned': '#7B68EE',
@@ -1079,15 +1089,15 @@ def plot_training_curves(all_histories, output_dir):
         ax2.fill_between(epochs, mean_loss - std_loss, mean_loss + std_loss, color=color, alpha=0.15)
 
     ax1.set_xlabel('Epoch'); ax1.set_ylabel('Validation accuracy (%)')
-    ax1.set_title('Accuracy during training \u2014 ImageNet-1K (ViT-Base)')
+    ax1.set_title('Accuracy during training \u2014 ImageNet-100(ViT-Base)')
     ax1.legend(); ax1.grid(True, alpha=0.3)
 
     ax2.set_xlabel('Epoch'); ax2.set_ylabel('Validation loss')
-    ax2.set_title('Validation loss during training \u2014 ImageNet-1K (ViT-Base)')
+    ax2.set_title('Validation loss during training \u2014 ImageNet-100(ViT-Base)')
     ax2.legend(); ax2.grid(True, alpha=0.3)
 
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, '01_training_comparison.png'), dpi=200)
+    plt.savefig(os.path.join(output_dir, '01_training_comparison.png'), dpi=300)
     plt.close()
 
 
@@ -1108,12 +1118,12 @@ def plot_cosine_similarity(all_pe_matrices, output_dir):
         cos_sim = compute_cosine_similarity(pe_matrix)
         im = ax.imshow(cos_sim, cmap='RdBu_r', vmin=-1, vmax=1, aspect='auto')
         label = pe_type.upper() if pe_type in ('rope', 'alibi') else f"{pe_type.capitalize()} PE"
-        ax.set_title(f'{label} \u2014 ImageNet-1K')
+        ax.set_title(f'{label} \u2014 ImageNet-100')
         ax.set_xlabel('Position'); ax.set_ylabel('Position')
         plt.colorbar(im, ax=ax, shrink=0.8)
 
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, '02_cosine_similarity.png'), dpi=200)
+    plt.savefig(os.path.join(output_dir, '02_cosine_similarity.png'), dpi=300)
     plt.close()
 
 
@@ -1149,9 +1159,9 @@ def plot_pca_tsne(all_pe_matrices, output_dir):
         axes[1, col].set_xlabel('t-SNE 1'); axes[1, col].set_ylabel('t-SNE 2')
         plt.colorbar(sc2, ax=axes[1, col], label='Position')
 
-    fig.suptitle('PCA and t-SNE Projections \u2014 ImageNet-1K (ViT-Base)', fontsize=16, y=1.01)
+    fig.suptitle('PCA and t-SNE Projections \u2014 ImageNet-100(ViT-Base)', fontsize=16, y=1.01)
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, '03_pca_tsne.png'), dpi=200)
+    plt.savefig(os.path.join(output_dir, '03_pca_tsne.png'), dpi=300)
     plt.close()
 
 
@@ -1177,15 +1187,15 @@ def plot_dimension_entropy(all_pe_matrices, output_dir):
         ax2.hist(ent, bins=30, alpha=0.5, color=color, label=label)
 
     ax1.set_xlabel('Dimension'); ax1.set_ylabel('Shannon entropy (bit)')
-    ax1.set_title('Entropy per embedding dimension \u2014 ImageNet-1K')
+    ax1.set_title('Entropy per embedding dimension \u2014 ImageNet-100')
     ax1.legend(); ax1.grid(True, alpha=0.3)
 
     ax2.set_xlabel('Shannon entropy (bit)'); ax2.set_ylabel('Number of dimensions')
-    ax2.set_title('Entropy distribution \u2014 ImageNet-1K')
+    ax2.set_title('Entropy distribution \u2014 ImageNet-100')
     ax2.legend()
 
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, '04_dimension_entropy.png'), dpi=200)
+    plt.savefig(os.path.join(output_dir, '04_dimension_entropy.png'), dpi=300)
     plt.close()
 
 
@@ -1210,11 +1220,11 @@ def plot_variance_per_dim(all_pe_matrices, output_dir):
         label = pe_type.upper() if pe_type in ('rope', 'alibi') else f"{pe_type.capitalize()} PE"
         ax.bar(np.arange(len(var)), var, color=color, alpha=0.7, width=1.0)
         ax.set_xlabel('Dimension'); ax.set_ylabel('Variance')
-        ax.set_title(f'{label} variance per dimension \u2014 ImageNet-1K')
+        ax.set_title(f'{label} variance per dimension \u2014 ImageNet-100')
         ax.grid(True, alpha=0.3, axis='y')
 
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, '05_variance_per_dim.png'), dpi=200)
+    plt.savefig(os.path.join(output_dir, '05_variance_per_dim.png'), dpi=300)
     plt.close()
 
 
@@ -1248,15 +1258,15 @@ def plot_mi_per_layer(all_mi, output_dir):
         ax2.fill_between(layers, mean_att - std_att, mean_att + std_att, color=color, alpha=0.15)
 
     ax1.set_xlabel('Layer'); ax1.set_ylabel('Mutual information (bit)')
-    ax1.set_title('MI(position, attention) per layer \u2014 ImageNet-1K')
+    ax1.set_title('MI(position, attention) per layer \u2014 ImageNet-100')
     ax1.legend(); ax1.set_xticks(layers); ax1.grid(True, alpha=0.3)
 
     ax2.set_xlabel('Layer'); ax2.set_ylabel('Shannon entropy (bit)')
-    ax2.set_title('Attention distribution entropy per layer \u2014 ImageNet-1K')
+    ax2.set_title('Attention distribution entropy per layer \u2014 ImageNet-100')
     ax2.legend(); ax2.set_xticks(layers); ax2.grid(True, alpha=0.3)
 
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, '06_mutual_information.png'), dpi=200)
+    plt.savefig(os.path.join(output_dir, '06_mutual_information.png'), dpi=300)
     plt.close()
 
 
@@ -1285,7 +1295,7 @@ def plot_noise_ablation(all_ablation, output_dir):
     ax1.axhline(y=0.1, color='red', linestyle=':', linewidth=1.5, alpha=0.7, label='Chance (0.1%)')
     ax1.set_xlabel('Noise level (\u00D7 \u03C3_PE)')
     ax1.set_ylabel('Test accuracy (%)')
-    ax1.set_title('Noise robustness \u2014 ImageNet-1K')
+    ax1.set_title('Noise robustness \u2014 ImageNet-100')
     ax1.legend(); ax1.grid(True, alpha=0.3)
 
     # Bar chart: with PE vs without PE
@@ -1312,10 +1322,10 @@ def plot_noise_ablation(all_ablation, output_dir):
         ax2.set_xticks(range(len(labels)))
         ax2.set_xticklabels(labels)
         ax2.set_ylabel('Test accuracy (%)')
-        ax2.set_title('Effect of PE removal \u2014 ImageNet-1K')
+        ax2.set_title('Effect of PE removal \u2014 ImageNet-100')
 
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, '07_noise_ablation.png'), dpi=200)
+    plt.savefig(os.path.join(output_dir, '07_noise_ablation.png'), dpi=300)
     plt.close()
 
 
@@ -1345,9 +1355,9 @@ def plot_probe_analysis(all_probe, output_dir):
 
     ax.set_xticks(x); ax.set_xticklabels(tasks)
     ax.set_ylabel('Probe accuracy (%)'); ax.set_ylim(0, 110)
-    ax.set_title('Probe analysis \u2014 ImageNet-1K (ViT-Base)')
+    ax.set_title('Probe analysis \u2014 ImageNet-100(ViT-Base)')
     ax.legend(); plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, '08_probe_analysis.png'), dpi=200)
+    plt.savefig(os.path.join(output_dir, '08_probe_analysis.png'), dpi=300)
     plt.close()
 
 
@@ -1374,15 +1384,15 @@ def plot_layer_entropy(all_layer_ent, output_dir):
         ax2.fill_between(layers, cls_e.mean(0)-cls_e.std(0), cls_e.mean(0)+cls_e.std(0), color=color, alpha=0.15)
 
     ax1.set_xlabel('Layer'); ax1.set_ylabel('Mean entropy (bit)')
-    ax1.set_title('Activation entropy across layers\n(ImageNet-1K \u2014 all tokens)')
+    ax1.set_title('Activation entropy across layers\n(ImageNet-100\u2014 all tokens)')
     ax1.legend(); ax1.set_xticks(layers); ax1.grid(True, alpha=0.3)
 
     ax2.set_xlabel('Layer'); ax2.set_ylabel('CLS token entropy (bit)')
-    ax2.set_title('CLS token entropy across layers\n(ImageNet-1K \u2014 information bottleneck)')
+    ax2.set_title('CLS token entropy across layers\n(ImageNet-100\u2014 information bottleneck)')
     ax2.legend(); ax2.set_xticks(layers); ax2.grid(True, alpha=0.3)
 
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, '09_layer_entropy.png'), dpi=200)
+    plt.savefig(os.path.join(output_dir, '09_layer_entropy.png'), dpi=300)
     plt.close()
 
 
