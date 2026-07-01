@@ -428,7 +428,7 @@ A compact release can be organised as follows. The exact Google Drive paths may 
 
 The trained weights and training histories are **not** included in this repository (76 models × ~344 MB). For each model the Drive hosts its best checkpoint (`best_model.pth`) and full training history, organised by dataset / protocol / PE method / seed:
 
-**[⬇ Download Checkpoints & Training Histories](https://drive.google.com/drive/folders/1elzYM_4Mwyy4aDTY5NQbmzTMyYxIRo2B?usp=drive_link)**
+**[⬇ Download Checkpoints & Training Histories](https://drive.google.com/drive/folders/1elzYM_4Mwyy4aDTY5NQbmzTMyYxIRo2B?usp=sharing)**
 
 The **76-model corpus** breaks down as follows:
 
