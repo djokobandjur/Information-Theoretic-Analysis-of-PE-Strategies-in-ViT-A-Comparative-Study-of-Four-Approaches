@@ -1,0 +1,19 @@
+\begin{table}[!t]
+\centering
+\caption{Cross-dataset linear-probe decodability ($\%$) for the two additive positional encodings. Learned entries for ImageNet-100 and CIFAR-100 are reported as the mean across $3$ seeds with the across-seed standard deviation. TinyImageNet has only one available Learned checkpoint and is therefore reported as a single-seed descriptive value without an across-seed standard deviation. Each per-seed estimate is a $5$-fold cross-validation mean stratified by the target label. Sinusoidal entries are seed-independent because the encoding is analytically fixed, so their across-seed standard deviation is zero by construction. Chance is $7.1\%$ for the $14{\times}14$ grids and $12.5\%$ for the $8{\times}8$ grid.}
+\label{tab:supp-probes}
+\begin{tabular}{llcc}
+\hline
+Dataset (grid) & PE & Row (\%) & Column (\%) \\
+\hline
+ImageNet-100 ($14{\times}14$) & Learned & 76.2 $\pm$ 1.6 & 31.3 $\pm$ 6.3 \\
+ & Sinusoidal & 89.3 $\pm$ 0.0 & 0.0 $\pm$ 0.0 \\
+\hline
+CIFAR-100 ($8{\times}8$) & Learned & 51.9 $\pm$ 2.4 & 58.7 $\pm$ 0.9 \\
+ & Sinusoidal & 86.0 $\pm$ 0.0 & 0.0 $\pm$ 0.0 \\
+\hline
+TinyImageNet ($14{\times}14$) & Learned & 81.7 & 49.0 \\
+ & Sinusoidal & 89.3 $\pm$ 0.0 & 0.0 $\pm$ 0.0 \\
+\hline
+\end{tabular}
+\end{table}
