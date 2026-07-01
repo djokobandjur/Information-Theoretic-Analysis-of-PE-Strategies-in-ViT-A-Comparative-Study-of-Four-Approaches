@@ -898,7 +898,7 @@ def compute_layer_entropy(model, val_loader, device, n_batches=50):
 def probe_analysis(pe_matrix, num_patches_per_side=14):
     """Train linear probes to predict row, column, exact position from PE."""
     from sklearn.linear_model import LogisticRegression
-    from sklearn.model_selection import cross_val_score
+    from sklearn.model_selection import cross_val_score, StratifiedKFold
 
     patches = pe_matrix[1:]  # Exclude CLS, shape (196, 768)
     num_patches = patches.shape[0]
@@ -1045,16 +1045,6 @@ def noise_ablation(model, val_loader, device, pe_type):
 def plot_training_curves(all_histories, output_dir):
     """Plot training curves for all PE types (averaged over seeds)."""
     import matplotlib.pyplot as plt
-    
-    plt.rcParams.update({
-    'font.size': 14,          # Osnovna veličina (brojevi na osama)
-    'axes.labelsize': 14,     # Veličina za X i Y labele (npr. Epoch, Loss)
-    'axes.titlesize': 15,     # Veličina za naslove podgrafika
-    'figure.titlesize': 18,   # Veličina za glavne naslove (suptitle)
-    'legend.fontsize': 12,    # Veličina fonta u legendama
-    'figure.dpi': 150,        # Možeš odmah da podesiš i podrazumevani kvalitet slika
-    'savefig.bbox': 'tight'   # Automatski seče prazan prostor oko slika pri čuvanju
-    })
 
     COLOR_MAP = {
         'learned': '#7B68EE',
@@ -1089,11 +1079,11 @@ def plot_training_curves(all_histories, output_dir):
         ax2.fill_between(epochs, mean_loss - std_loss, mean_loss + std_loss, color=color, alpha=0.15)
 
     ax1.set_xlabel('Epoch'); ax1.set_ylabel('Validation accuracy (%)')
-    ax1.set_title('Accuracy during training \u2014 ImageNet-100(ViT-Base)')
+    ax1.set_title('Accuracy during training \u2014 ImageNet-100 (ViT-Base)')
     ax1.legend(); ax1.grid(True, alpha=0.3)
 
     ax2.set_xlabel('Epoch'); ax2.set_ylabel('Validation loss')
-    ax2.set_title('Validation loss during training \u2014 ImageNet-100(ViT-Base)')
+    ax2.set_title('Validation loss during training \u2014 ImageNet-100 (ViT-Base)')
     ax2.legend(); ax2.grid(True, alpha=0.3)
 
     plt.tight_layout()
@@ -1159,7 +1149,7 @@ def plot_pca_tsne(all_pe_matrices, output_dir):
         axes[1, col].set_xlabel('t-SNE 1'); axes[1, col].set_ylabel('t-SNE 2')
         plt.colorbar(sc2, ax=axes[1, col], label='Position')
 
-    fig.suptitle('PCA and t-SNE Projections \u2014 ImageNet-100(ViT-Base)', fontsize=16, y=1.01)
+    fig.suptitle('PCA and t-SNE Projections \u2014 ImageNet-100 (ViT-Base)', fontsize=16, y=1.01)
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, '03_pca_tsne.png'), dpi=300)
     plt.close()
@@ -1355,7 +1345,7 @@ def plot_probe_analysis(all_probe, output_dir):
 
     ax.set_xticks(x); ax.set_xticklabels(tasks)
     ax.set_ylabel('Probe accuracy (%)'); ax.set_ylim(0, 110)
-    ax.set_title('Probe analysis \u2014 ImageNet-100(ViT-Base)')
+    ax.set_title('Probe analysis \u2014 ImageNet-100 (ViT-Base)')
     ax.legend(); plt.tight_layout()
     plt.savefig(os.path.join(output_dir, '08_probe_analysis.png'), dpi=300)
     plt.close()
@@ -1384,11 +1374,11 @@ def plot_layer_entropy(all_layer_ent, output_dir):
         ax2.fill_between(layers, cls_e.mean(0)-cls_e.std(0), cls_e.mean(0)+cls_e.std(0), color=color, alpha=0.15)
 
     ax1.set_xlabel('Layer'); ax1.set_ylabel('Mean entropy (bit)')
-    ax1.set_title('Activation entropy across layers\n(ImageNet-100\u2014 all tokens)')
+    ax1.set_title('Activation entropy across layers\n(ImageNet-100 \u2014 all tokens)')
     ax1.legend(); ax1.set_xticks(layers); ax1.grid(True, alpha=0.3)
 
     ax2.set_xlabel('Layer'); ax2.set_ylabel('CLS token entropy (bit)')
-    ax2.set_title('CLS token entropy across layers\n(ImageNet-100\u2014 information bottleneck)')
+    ax2.set_title('CLS token entropy across layers\n(ImageNet-100 \u2014 information bottleneck)')
     ax2.legend(); ax2.set_xticks(layers); ax2.grid(True, alpha=0.3)
 
     plt.tight_layout()
@@ -1541,7 +1531,8 @@ def main():
                     mlp_ratio=config['mlp_ratio'], dropout=config['dropout'],
                     pe_type=pe_type
                 ).to(device)
-                model.load_state_dict(torch.load(model_path, map_location=device))
+                state_dict = torch.load(model_path, map_location=device)
+                model.load_state_dict({k.replace('_orig_mod.', ''): v for k, v in state_dict.items()})
 
                 # 1. PE matrix
                 pe_matrix = extract_positional_embedding(model, pe_type)
