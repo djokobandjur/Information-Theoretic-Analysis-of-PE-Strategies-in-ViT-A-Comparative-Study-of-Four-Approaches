@@ -311,7 +311,7 @@ Three seeds × {1D, 2D} = the 6-model canonical TinyImageNet corpus. There is **
 
 | File / notebook | Purpose | Required inputs | Generated outputs | Consumed by |
 |---|---|---|---|---|
-| `revision_analysis_v41_mi_suite.ipynb` / `revision_analysis_v41_mi_suite_clean_tinyin.ipynb` | Computes per-layer attention–position mutual information and related diagnostics across datasets/seeds. | Trained checkpoints, validation data, model definition. | Dataset-specific aggregates such as `revision_results/imagenet100/_aggregate.json`, `revision_results/cifar100/_aggregate.json`, and `revision_results/tinyimagenet/_aggregate.json`; the top-level `revision_results/_master_summary.json`; dataset-level diagnostic JSON files. | Figure 3 panel (a), the standalone `06_mutual_information`, numerical audit. |
+| `revision_analysis_v41_mi_suite_clean_tinyin.ipynb` | Computes per-layer attention–position mutual information and related diagnostics across datasets/seeds. | Trained checkpoints, validation data, model definition. | Dataset-specific aggregates such as `revision_results/imagenet100/_aggregate.json`, `revision_results/cifar100/_aggregate.json`, and `revision_results/tinyimagenet/_aggregate.json`; the top-level `revision_results/_master_summary.json`; dataset-level diagnostic JSON files. | Figure 3 panel (a), the standalone `06_mutual_information`, numerical audit. |
 | `compute_mi_cls_controls.py` | Computes CLS-inclusive and CLS-excluded patch-only MI summaries for 1D-vs-2D ALiBi-style controls. | Canonical 1D-ALiBi-style checkpoints; fixed 2D-ALiBi-style checkpoints; matched 2D-ALiBi-style checkpoints; CIFAR-100 validation data. | `revision_results/mi_cls_control/cifar100_canonical_n12/paired_alibi_mi_summary.json`; `revision_results/mi_cls_control/cifar100_canonical_matched2d_n12/paired_alibi_mi_summary.json`. | Main Figure 3 panel (b), 2D-ALiBi-style MI-control claims, and the final figure-regeneration workflow. |
 | `extract_tables_data.py` | **Runs** the noise-ablation and linear-probe analysis on the 12 ImageNet-100 checkpoints and **writes** the consolidated JSON; also prints the Table 2 (noise) and Table 3 (probe) summaries. | The 12 `best_model.pth` under `<results>/{pe}_seed{seed}/`, the ImageNet-100 validation set, and `full_scale_experiment.py` (imports `VisionTransformer`, `noise_ablation`, `probe_analysis`, `extract_positional_embedding`). | **`analysis_data.json`** (written to the results dir, i.e. `.../pe_experiment/results/analysis_data.json`); console Table 2 / Table 3. | `run_13_analysis.ipynb` and `07_noise_ablation` (Figure S2); manual table verification. |
 | `rerun_cross_dataset_probes_protocol_matched.py` | Reruns the additive-PE row/column probe analysis across ImageNet-100, CIFAR-100, and TinyImageNet using the protocol-matched held-out-position probe. | Learned PE checkpoints, optional Sinusoidal checkpoints or analytic generation, dataset/grid metadata. | `per_seed_probe_results.csv`, `probe_summary.csv`, `probe_table_supp.tex`, and `probe_rerun_config.json`. | Supplementary probe table, cross-dataset probe claims, and reproducibility audit. |
@@ -369,21 +369,20 @@ A compact release can be organised as follows. The exact Google Drive paths may 
 ├── tinyimagenet_alibi_canonical.py           # canonical paired 1D/2D ALiBi-style TinyImageNet re-training
 ├── requirements.txt
 ├── notebooks/
-│   ├── revision_analysis_v41_mi_suite.ipynb
 │   ├── revision_analysis_v41_mi_suite_clean_tinyin.ipynb
 │   ├── regenerate_revision_figures.ipynb
-│   ├── run_13_analysis.ipynb              # produces 01_training_comparison
+│   ├── run_13_analysis.ipynb                         # produces 01_training_comparison
 │   ├── train_tinyimagenet.ipynb                      # exploratory TinyImageNet, one (PE, seed) per session
 │   ├── train_tinyimagenet_alibi_canonical.ipynb      # canonical 1D+2D ALiBi-style, sequential (seed-paired)
 │   ├── train_tinyimagenet_alibi_parallel.ipynb       # canonical 1D OR 2D ALiBi-style, split across two sessions
-│   ├── tin_allinone.ipynb                            # canonical ALiBi-style, self-contained single-cell runner
-│   └── other per-run training notebooks
+│   ├── tin_allinone.ipynb                            # canonical ALiBi-style, self-contained two-cell Setup/Train runner
+│   └── 
 ├── results/
 │   └── analysis_data.json
 ├── probe_rerun_merged_final/
-│   ├── per_seed_probe_results.csv
-│   ├── probe_summary.csv
-│   └── probe_table_supp.tex
+│   ├── per_seed_probe_results.csv                    # merged per-seed audit trail
+│   ├── probe_summary.csv                             # summary derived from per_seed_probe_results.csv
+│   └── probe_table_supp.tex                          # LaTeX table generated from the merged summary
 ├── revision_results/
 │   ├── _master_summary.json                  # master exploratory summary across ImageNet-100, CIFAR-100, and TinyImageNet
 │   ├── imagenet100/
