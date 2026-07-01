@@ -311,11 +311,11 @@ Three seeds × {1D, 2D} = the 6-model canonical TinyImageNet corpus. There is **
 
 | File / notebook | Purpose | Required inputs | Generated outputs | Consumed by |
 |---|---|---|---|---|
-| `revision_analysis_v41_mi_suite.ipynb` / `revision_analysis_v41_mi_suite_clean_tinyin.ipynb` | Computes per-layer attention–position mutual information and related diagnostics across datasets/seeds. | Trained checkpoints, validation data, model definition. | `revision_results/imagenet100/_aggregate.json`; `_master_summary.json`; dataset-level diagnostic JSON files. | Figure 3 panel (a), the standalone `06_mutual_information`, numerical audit. |
+| `revision_analysis_v41_mi_suite.ipynb` / `revision_analysis_v41_mi_suite_clean_tinyin.ipynb` | Computes per-layer attention–position mutual information and related diagnostics across datasets/seeds. | Trained checkpoints, validation data, model definition. | Dataset-specific aggregates such as `revision_results/imagenet100/_aggregate.json`; the top-level `revision_results/_master_summary.json`; dataset-level diagnostic JSON files. | Figure 3 panel (a), the standalone `06_mutual_information`, numerical audit. |
 | `compute_mi_cls_controls.py` | Computes CLS-inclusive and CLS-excluded patch-only MI summaries for 1D-vs-2D ALiBi-style controls. | Canonical 1D-ALiBi-style checkpoints; fixed 2D-ALiBi-style checkpoints; matched 2D-ALiBi-style checkpoints; CIFAR-100 validation data. | `revision_results/mi_cls_control/cifar100_canonical_n12/paired_alibi_mi_summary.json`; `revision_results/mi_cls_control/cifar100_canonical_matched2d_n12/paired_alibi_mi_summary.json`. | Main Figure 3 panel (b), 2D-ALiBi-style MI-control claims, and the final figure-regeneration workflow. |
 | `extract_tables_data.py` | **Runs** the noise-ablation and linear-probe analysis on the 12 ImageNet-100 checkpoints and **writes** the consolidated JSON; also prints the Table 2 (noise) and Table 3 (probe) summaries. | The 12 `best_model.pth` under `<results>/{pe}_seed{seed}/`, the ImageNet-100 validation set, and `full_scale_experiment.py` (imports `VisionTransformer`, `noise_ablation`, `probe_analysis`, `extract_positional_embedding`). | **`analysis_data.json`** (written to the results dir, i.e. `.../pe_experiment/results/analysis_data.json`); console Table 2 / Table 3. | `run_13_analysis.ipynb` and `07_noise_ablation` (Figure S2); manual table verification. |
 | `rerun_cross_dataset_probes_protocol_matched.py` | Reruns the additive-PE row/column probe analysis across ImageNet-100, CIFAR-100, and TinyImageNet using the protocol-matched held-out-position probe. | Learned PE checkpoints, optional Sinusoidal checkpoints or analytic generation, dataset/grid metadata. | `per_seed_probe_results.csv`, `probe_summary.csv`, `probe_table_supp.tex`, and `probe_rerun_config.json`. | Supplementary probe table, cross-dataset probe claims, and reproducibility audit. |
-| `merge_probe_seed_outputs.py` | Merges probe reruns when datasets or seeds are executed in separate jobs. | One or more probe output directories or `per_seed_probe_results.csv` files. | Merged `per_seed_probe_results.csv`, `probe_summary.csv`, and `probe_table_supp.tex`. | Final cross-dataset probe table when TinyImageNet is run as a separate single-seed job. |
+| `merge_probe_seed_outputs.py` | Merges probe reruns when datasets or seeds are executed in separate jobs. | One or more probe output directories or `per_seed_probe_results.csv` files. | Final merged `per_seed_probe_results.csv`, derived `probe_summary.csv`, and derived `probe_table_supp.tex`. | Produces the final `probe_rerun_merged_final/` outputs used for the cross-dataset probe table when jobs are run separately. |
 
 ### 4. Figure-generation layer
 
@@ -332,11 +332,11 @@ These files are the canonical inputs for table/figure reproduction.
 | File | What it contains | Primary use |
 |---|---|---|
 | `results/analysis_data.json` | Noise-ablation and linear-probe summaries for the 12 ImageNet-100 models (one entry per `pe_type`/`seed`). **Produced by `extract_tables_data.py`.** | Table extraction (Tables 2–3) and `07_noise_ablation` (Figure S2) regeneration. |
-| `probe_rerun_merged_final/per_seed_probe_results.csv` | Per-seed protocol-matched row/column/position probe outputs for additive PE across ImageNet-100, CIFAR-100, and TinyImageNet. | Audit trail for the cross-dataset probe analysis. |
-| `probe_rerun_merged_final/probe_summary.csv` | Cross-dataset probe means/stds used for the supplementary probe table. | Source of the reported row/column probe values. |
-| `probe_rerun_merged_final/probe_table_supp.tex` | LaTeX table emitted by the probe rerun/merge workflow. | Supplementary cross-dataset probe table. |
+| `probe_rerun_merged_final/per_seed_probe_results.csv` | Final merged per-seed protocol-matched probe outputs assembled from separately executed probe jobs for ImageNet-100, CIFAR-100, and TinyImageNet. | Audit trail for the cross-dataset probe analysis. |
+| `probe_rerun_merged_final/probe_summary.csv` | Derived summary over the merged per-seed probe file, containing the cross-dataset row/column probe means and standard deviations. | Source of the reported row/column probe values. |
+| `probe_rerun_merged_final/probe_table_supp.tex` | LaTeX table generated from the merged probe summary. | Supplementary cross-dataset probe table. |
 | `revision_results/imagenet100/_aggregate.json` | ImageNet-100 aggregate per-layer MI means/stds by PE method. | Main Figure 3 panel (a) and `06_mutual_information.png/pdf`. |
-| `revision_results/imagenet100/_master_summary.json` | Broader dataset/method/seed diagnostic summary. | Numerical audit and fallback analysis; not the preferred Figure 3 input if `_aggregate.json` is available. |
+| `revision_results/_master_summary.json` | Master run-level diagnostic summary for the exploratory cross-method matrix across ImageNet-100, CIFAR-100, and TinyImageNet. | Numerical audit and fallback analysis; not the preferred Figure 3 input if dataset-specific `_aggregate.json` files are available. |
 | `revision_results/mi_cls_control/cifar100_canonical_n12/paired_alibi_mi_summary.json` | CIFAR-100 canonical 1D-vs-fixed-2D ALiBi-style MI summary, 12 seeds. | Main Figure 3 panel (b), fixed 2D bars. |
 | `revision_results/mi_cls_control/cifar100_canonical_matched2d_n12/paired_alibi_mi_summary.json` | CIFAR-100 canonical 1D-vs-magnitude-matched-2D ALiBi-style MI summary, 12 seeds. | Main Figure 3 panel (b), matched 2D bars. |
 | `training_history.json` | Per-epoch training/validation loss and accuracy for each run. | Accuracy tables, sanity checks, and run-level audit. |
@@ -381,9 +381,9 @@ A compact release can be organised as follows. The exact Google Drive paths may 
 │   ├── probe_summary.csv
 │   └── probe_table_supp.tex
 ├── revision_results/
+│   ├── _master_summary.json                  # master exploratory summary across ImageNet-100, CIFAR-100, and TinyImageNet
 │   ├── imagenet100/
-│   │   ├── _aggregate.json
-│   │   └── _master_summary.json
+│   │   └── _aggregate.json
 │   └── mi_cls_control/
 │       ├── cifar100_canonical_n12/
 │       │   └── paired_alibi_mi_summary.json
@@ -420,7 +420,7 @@ A compact release can be organised as follows. The exact Google Drive paths may 
 
 The trained weights and training histories are **not** included in this repository (76 models × ~344 MB). For each model the Drive hosts its best checkpoint (`best_model.pth`) and full training history, organised by dataset / protocol / PE method / seed:
 
-**[⬇ Download Checkpoints & Training Histories](https://drive.google.com/drive/folders/1elzYM_4Mwyy4aDTY5NQbmzTMyYxIRo2B?usp=sharing)**
+**[⬇ Download Checkpoints & Training Histories](https://drive.google.com/drive/folders/1gPwVSE0qctWVeaGwCv3eGQdQR4IK6Xds?usp=sharing)**
 
 The **76-model corpus** breaks down as follows:
 
@@ -568,7 +568,7 @@ python merge_probe_seed_outputs.py \
   --outdir probe_rerun_merged_final
 ```
 
-The final merged outputs are `probe_rerun_merged_final/per_seed_probe_results.csv`, `probe_rerun_merged_final/probe_summary.csv`, and `probe_rerun_merged_final/probe_table_supp.tex`.
+The repository stores the final merged outputs in `probe_rerun_merged_final/`: `per_seed_probe_results.csv`, `probe_summary.csv`, and `probe_table_supp.tex`. These files are not a single all-in-one raw probe run; they are the final merged products assembled from the separately executed per-dataset/per-seed probe jobs. The merged `per_seed_probe_results.csv` is the audit trail, while `probe_summary.csv` and `probe_table_supp.tex` are derived from that merged file and are used for the supplementary probe results.
 
 ## Requirements
 
