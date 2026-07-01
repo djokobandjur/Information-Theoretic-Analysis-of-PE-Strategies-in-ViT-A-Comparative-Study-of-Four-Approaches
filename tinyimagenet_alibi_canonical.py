@@ -2,7 +2,7 @@
 tinyimagenet_alibi_canonical.py
 ================================
 Re-trains 1D-ALiBi AND 2D-ALiBi on TinyImageNet under the SAME canonical
-protocol used for the CIFAR-100 10-seed ALiBi re-training. This produces
+protocol used for the CIFAR-100 12-seed ALiBi re-training. This produces
 two strictly paired single-seed results so the missing 2D-ALiBi cell in
 Table 3 (TinyImageNet row) can be filled with a directly comparable
 number, and so the 1D vs. 2D ALiBi comparison on TinyImageNet uses the
@@ -71,7 +71,7 @@ sys.path.insert(0, '/content')
 from full_scale_experiment_v2 import VisionTransformer
 
 # ============================================================
-# CANONICAL CONFIG -- matches CIFAR-100 10-seed protocol and the
+# CANONICAL CONFIG -- matches CIFAR-100 12-seed protocol and the
 # manuscript training recipe (Sec. 4).
 # ============================================================
 TINYIN_CONFIG = {
@@ -235,7 +235,7 @@ def get_loaders(extracted_dir, batch_size, num_workers):
 
 
 # ============================================================
-# TRAINING UTILITIES (canonical -- identical to cifar100_alibi_10seeds.py)
+# TRAINING UTILITIES (canonical -- identical to cifar100_alibi_12seeds.py)
 # ============================================================
 def set_all_seeds(seed):
     """Set every RNG source so per-seed paired runs are deterministic."""
