@@ -198,7 +198,7 @@ python regenerate_revision_figures.py \
 
 The command above regenerates all final revision figures handled by `regenerate_revision_figures.py` when the checkpoints and JSON files are available, including `figS3_distance_distortion`, which has no external input. The optional CLI flags `--only-fig3` and `--only-fig7` remain useful for debugging, but the release notebook does not need separate cells for them.
 
-**Expected final figure outputs**
+**Expected outputs from `regenerate_revision_figures.py`**
 
 ```text
 figures_revision/
@@ -292,7 +292,7 @@ Three seeds × {1D, 2D} = the 6-model canonical TinyImageNet corpus. There is **
 |---|---|---|---|---|
 | `full_scale_experiment.py` | Base ViT training/analysis implementation for Learned, Sinusoidal, RoPE, and 1D-ALiBi-style. | Dataset path, PE type, seed, training/analysis CLI arguments. | Per-run checkpoints, `training_history.json`, and analysis outputs such as `analysis_data.json` when the analysis modes are used. | Training, checkpoint analysis, and the patched 2D-ALiBi-style model-generation step. |
 | `apply_2d_alibi_patch.py` | Patches the base experiment file so the model supports 2D-ALiBi-style. | `full_scale_experiment.py`; output filename, usually `full_scale_experiment_v2.py`. | `full_scale_experiment_v2.py`. | 2D-ALiBi-style training and checkpoint-dependent figure generation. |
-| `full_scale_experiment_v2.py` | Patched model/training definition with 2D-ALiBi-style support. | Produced by `apply_2d_alibi_patch.py`; datasets and checkpoints when used for training/analysis. | Same type of training outputs as the base experiment script. | 2D-ALiBi-style runs and `regenerate_revision_figures.py`. |
+| `full_scale_experiment_v2.py` *(generated locally)* | Patched model/training definition with 2D-ALiBi-style support. | Generated locally by `apply_2d_alibi_patch.py` from `full_scale_experiment.py`; not stored in the repository. | Same type of training outputs as the base experiment script when used for training/analysis. | 2D-ALiBi-style runs and `regenerate_revision_figures.py`. |
 
 **PE naming note.** JSON keys and the final figure script use `alibi_2d`. Some older CLI paths may use `alibi2d`; check `--help` for the exact accepted spelling in the local script version.
 
@@ -302,6 +302,7 @@ Three seeds × {1D, 2D} = the 6-model canonical TinyImageNet corpus. There is **
 |---|---|---|---|---|
 | `full_scale_experiment.py` | Primary cross-method matrix for ImageNet-100 and other base runs. | Dataset, `--pe_type`, `--seed`, training hyperparameters. | `best_model.pth`, `final_model.pth`, `checkpoint_epoch*.pth`, `training_history.json`. | Produces the trained models and histories for the main PE comparison. |
 | `cifar100_experiment.py` | CIFAR-100 exploratory cross-method matrix. | CIFAR-100 data or torchvision download path; PE type/seed configuration. | CIFAR-100 checkpoints and histories; optional robustness outputs. | Reproduces the low-data cross-method accuracy/diagnostic matrix. |
+| `cifar100_alibi_12seeds.py` | CIFAR-100 canonical paired 1D/2D ALiBi-style protocol, 12 seeds. | Patched `full_scale_experiment_v2.py`; CIFAR-100 auto-downloaded via torchvision. | `results_cifar100_v2/{alibi,alibi_2d}_seed{N}/best_model.pth` and `training_history.json`; `_alibi_12seeds_summary.json`. | Produces the 24-model canonical CIFAR-100 paired corpus used for the primary 1D-vs-2D ALiBi-style accuracy comparison and the fixed-slope MI-control summary. |
 | `cifar100_2d_alibi_matched_12seeds.py` | CIFAR-100 magnitude-matched 2D-ALiBi-style control, 12 seeds. | CIFAR-100, matched-control hyperparameters, seeds. | Matched 2D-ALiBi-style checkpoints and `training_history.json` files. | Tests the scale sensitivity of the fixed-slope 2D-ALiBi-style MI effect. |
 | `tinyimagenet_experiment.py` | TinyImageNet exploratory validation (legacy recipe: `torch.compile` on, **no** gradient clipping). | TinyImageNet data, PE type/seed configuration (`--pe_type`, `--seed`, `--resume`). | Checkpoints + `training_history.json` under `Trained models_TinyImageNet/`. | Produces the exploratory single-seed TinyImageNet accuracies (Learned / Sinusoidal / RoPE / 1D-ALiBi-style) at *N* = 197. |
 | `tinyimagenet_alibi_canonical.py` (run via `train_tinyimagenet_alibi_canonical.ipynb`, `train_tinyimagenet_alibi_parallel.ipynb`, or `tin_allinone.ipynb`) | TinyImageNet **canonical paired** 1D/2D ALiBi-style re-training under the matched protocol (fp32, gradient clipping at 1.0, NaN-loss guard, `torch.compile` disabled), so the targeted distance-geometry intervention is evaluated under aligned numerics. | Patched `full_scale_experiment_v2.py` (a fail-fast probe verifies `alibi_2d` / `TwoDALiBi` support before training); TinyImageNet data (auto-downloaded if absent); `SEEDS` / `PE_TYPES` set in-file. | `Trained models_TinyImageNet_v2/{alibi,alibi_2d}_seed{N}/best_model.pth` + `training_history.json`; `_alibi_canonical_summary.json`. | Produces the bit-comparable 1D-vs-2D ALiBi-style TinyImageNet pair — the canonical-protocol counterpart to the exploratory row above, used for the TinyImageNet entry of the 2D-ALiBi-style test. |
@@ -354,17 +355,17 @@ These files are the canonical inputs for table/figure reproduction.
 A compact release can be organised as follows. The exact Google Drive paths may differ, but the relative roles of the files should remain the same.
 
 ```text
-.
+Information-Theoretic-Analysis-of-PE-Strategies-in-ViT-A-Comparative-Study-of-Four-Approaches/
 ├── full_scale_experiment.py
-├── apply_2d_alibi_patch.py
-├── full_scale_experiment_v2.py              # generated by the patch script
+├── apply_2d_alibi_patch.py                  # generates full_scale_experiment_v2.py locally
 ├── regenerate_revision_figures.py           # single figure-generation entry point
 ├── extract_tables_data.py
 ├── compute_mi_cls_controls.py
 ├── rerun_cross_dataset_probes_protocol_matched.py
 ├── merge_probe_seed_outputs.py
 ├── cifar100_experiment.py
-├── cifar100_2d_alibi_matched_12seeds.py
+├── cifar100_alibi_12seeds.py                 # CIFAR-100 canonical paired 1D/2D ALiBi-style, 12 seeds
+├── cifar100_2d_alibi_matched_12seeds.py      # CIFAR-100 magnitude-matched 2D-ALiBi-style control, 12 seeds
 ├── tinyimagenet_experiment.py                # exploratory TinyImageNet matrix (legacy recipe)
 ├── tinyimagenet_alibi_canonical.py           # canonical paired 1D/2D ALiBi-style TinyImageNet re-training
 ├── requirements.txt
@@ -375,8 +376,7 @@ A compact release can be organised as follows. The exact Google Drive paths may 
 │   ├── train_tinyimagenet.ipynb                      # exploratory TinyImageNet, one (PE, seed) per session
 │   ├── train_tinyimagenet_alibi_canonical.ipynb      # canonical 1D+2D ALiBi-style, sequential (seed-paired)
 │   ├── train_tinyimagenet_alibi_parallel.ipynb       # canonical 1D OR 2D ALiBi-style, split across two sessions
-│   ├── tin_allinone.ipynb                            # canonical ALiBi-style, self-contained two-cell Setup/Train runner
-│   └── 
+│   └── tin_allinone.ipynb                            # canonical ALiBi-style, self-contained two-cell Setup/Train runner
 ├── results/
 │   └── analysis_data.json
 ├── probe_rerun_merged_final/
@@ -401,6 +401,8 @@ A compact release can be organised as follows. The exact Google Drive paths may 
 │   ├── fig_main_mi_control.pdf
 │   ├── fig2_cosine_similarity.png
 │   ├── fig2_cosine_similarity.pdf
+│   ├── 01_training_comparison.png
+│   ├── 01_training_comparison.pdf
 │   ├── 03_pca_tsne.png
 │   ├── 03_pca_tsne.pdf
 │   ├── fig4a_embedding_entropy.png
@@ -415,11 +417,15 @@ A compact release can be organised as follows. The exact Google Drive paths may 
 │   ├── 06_mutual_information.pdf
 │   ├── 07_noise_ablation.png
 │   ├── 07_noise_ablation.pdf
+│   ├── 09_layer_entropy.png
+│   ├── 09_layer_entropy.pdf
 │   ├── figS3_distance_distortion.png
 │   └── figS3_distance_distortion.pdf
 ├── LICENSE
 └── README.md
 ```
+`full_scale_experiment_v2.py` is generated locally by `apply_2d_alibi_patch.py`
+and is not stored in the repository.
 
 > Per-model artifacts — the best checkpoint (`best_model.pth`) and full training history — are **not** stored here due to their size (76 models); they live on Google Drive (see below).
 
@@ -520,6 +526,10 @@ python full_scale_experiment.py \
 
 `--pe_type` accepts `learned`, `sinusoidal`, `rope`, `alibi` (1D), and `alibi2d` (2D-ALiBi-style). Set `--num_classes` to 100 (ImageNet-100 / CIFAR-100) or 200 (TinyImageNet). Run `python full_scale_experiment.py --help` for the full option list (dataset/patch configuration and protocol flags).
 
+For 2D-ALiBi-style runs, use the patched `full_scale_experiment_v2.py`
+generated by `apply_2d_alibi_patch.py`; the base `full_scale_experiment.py`
+is the source file before patching.
+
 ### Running analysis
 
 ```bash
@@ -577,7 +587,14 @@ python merge_probe_seed_outputs.py \
 
 The repository stores the final merged outputs in `probe_rerun_merged_final/`: `per_seed_probe_results.csv`, `probe_summary.csv`, and `probe_table_supp.tex`. These files are not a single all-in-one raw probe run; they are the final merged products assembled from the separately executed per-dataset/per-seed probe jobs. The merged `per_seed_probe_results.csv` is the audit trail, while `probe_summary.csv` and `probe_table_supp.tex` are derived from that merged file and are used for the supplementary probe results.
 
+`probe_rerun_config.json`, when present, is a provenance/configuration file for the probe rerun and is not required by the manuscript tables.
+
 ## Requirements
+
+The original experiments were executed in Google Colab. The `requirements.txt`
+file provides a minimal package list for running the released scripts outside
+Colab; CUDA-specific PyTorch wheels should be installed according to the target
+machine.
 
 ```
 torch>=2.0
@@ -630,7 +647,12 @@ All pairwise accuracy comparisons use paired bootstrap 95% CIs (exact 27-point e
 
 ## License
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+Code in this repository is released under the MIT License — see the
+[LICENSE](LICENSE) file for details.
+
+Non-code scholarly materials in this repository, including figures, tables,
+README text, and metadata, are released under CC BY 4.0 unless otherwise noted.
+Datasets remain subject to their original licenses and terms of use.
 
 ## Acknowledgments
 
