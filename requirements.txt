@@ -1,0 +1,23 @@
+# Core deep-learning stack
+# Install the CUDA-specific PyTorch build appropriate for your system if needed:
+# https://pytorch.org/get-started/locally/
+torch>=2.0
+torchvision>=0.15
+
+# Vision Transformer utilities
+timm>=0.9
+
+# Numerical and scientific computing
+numpy>=1.23
+scipy>=1.10
+pandas>=1.5
+
+# Analysis / statistics / probes
+scikit-learn>=1.2
+
+# Plotting and progress bars
+matplotlib>=3.7
+tqdm>=4.64
+
+# Image I/O used by torchvision/ImageFolder-style pipelines
+Pillow>=9.0
