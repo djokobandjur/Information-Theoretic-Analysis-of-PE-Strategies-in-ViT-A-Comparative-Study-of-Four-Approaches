@@ -646,15 +646,17 @@ All pairwise accuracy comparisons use paired bootstrap 95% CIs (exact 27-point e
 ## Citation
 
 ```bibtex
-@article{bandjur2026information,
+@misc{bandjur2026information,
   title   = {Information-Theoretic Analysis of Positional Encoding Strategies
-             in Vision Transformers: A Comparative Study of Four Approaches},
+             in Vision Transformers: Major Revision Reproducibility Release},
   author  = {Banđur, Đoko and Banđur, Miloš and Jakšić, Branimir},
   year    = {2026},
-  note    = {Preprint},
-  doi     = {10.5281/zenodo.19054891}
+  version = {v2.0.0},
+  publisher = {Zenodo},
+  doi     = {10.5281/zenodo.21127035}
 }
 ```
+The DOI `10.5281/zenodo.21127035` identifies the specific v2.0.0 major-revision release.
 The DOI `10.5281/zenodo.19054891` is the Zenodo concept DOI and resolves to the latest version of the repository release.
 
 ## License
