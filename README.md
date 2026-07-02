@@ -286,6 +286,12 @@ Three seeds × {1D, 2D} = the 6-model canonical TinyImageNet corpus. There is **
 
 ## Script and artifact map
 
+### 0. Dataset-preparation helper
+
+| File | Purpose | Required inputs | Generated outputs | Used by |
+|---|---|---|---|---|
+| `00_setup_imagenet.py` | Prepares the ImageNet-100 validation set on the Colab local SSD by extracting only the 100 target classes from the official ILSVRC2012 validation archive. | Official `ILSVRC2012_img_val.tar` on Google Drive; `val_labels.txt` and `imagenet100_classes.txt` are provided in this repository. | `/content/imagenet100/val/{synset_id}/*.JPEG` with the 5,000 ImageNet-100 validation images arranged by synset. | Optional ImageNet-100 dataset-preparation helper for validation/evaluation; not a model-training or figure-generation entry point. |
+
 ### 1. Model-definition and patching layer
 
 | File | Purpose | Required inputs | Generated outputs | Used by |
@@ -356,6 +362,9 @@ A compact release can be organised as follows. The exact Google Drive paths may 
 
 ```text
 Information-Theoretic-Analysis-of-PE-Strategies-in-ViT-A-Comparative-Study-of-Four-Approaches/
+├── 00_setup_imagenet.py                     # optional ImageNet-100 validation-set preparation helper
+├── imagenet100_classes.txt                  # 100 ImageNet-100 synset IDs from Tian et al.
+├── val_labels.txt                           # ImageNet validation image-to-synset labels used by setup helper
 ├── full_scale_experiment.py
 ├── apply_2d_alibi_patch.py                  # generates full_scale_experiment_v2.py locally
 ├── regenerate_revision_figures.py           # single figure-generation entry point
@@ -469,7 +478,7 @@ Three image-classification datasets spanning the low- to intermediate-data regim
 | **CIFAR-100** (low-data) | 100 | 50K / 10K | 4×4 | 8×8 | 65 |
 | **TinyImageNet** (intermediate) | 200 | 100K / 10K | 16×16 | 14×14 | 197 |
 
-- **ImageNet-100** — the 100-class subset of ILSVRC-2012 defined by [Tian et al. (2020)](https://arxiv.org/abs/1906.05849). Class list: [imagenet100.txt](https://raw.githubusercontent.com/HobbitLong/CMC/master/imagenet100.txt). Images at 224×224.
+- **ImageNet-100** — the 100-class subset of ILSVRC-2012 defined by [Tian et al. (2020)](https://arxiv.org/abs/1906.05849). Class list: [imagenet100.txt](https://raw.githubusercontent.com/HobbitLong/CMC/master/imagenet100.txt). Images at 224×224. The helper script `00_setup_imagenet.py` prepares the ImageNet-100 validation subset locally in Colab from the official `ILSVRC2012_img_val.tar`, using the repository-provided `val_labels.txt` and `imagenet100_classes.txt` metadata files.
 - **CIFAR-100** — native 32×32 images with a 4×4 patch size (8×8 grid), avoiding the ~7× upsampling artefacts of resizing to 224×224 (standard ViT-on-CIFAR protocol).
 - **TinyImageNet** — native 64×64 upsampled to 224×224 (~3.5×), retaining the ImageNet-100 patch configuration for direct diagnostic comparability.
 
