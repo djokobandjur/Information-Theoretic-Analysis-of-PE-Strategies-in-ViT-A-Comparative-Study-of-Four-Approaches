@@ -1,6 +1,6 @@
 # Information-Theoretic Analysis of Positional Encoding Strategies in Vision Transformers: A Comparative Study of Four Approaches
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19063156.svg)](https://doi.org/10.5281/zenodo.19063156)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19054891.svg)](https://doi.org/10.5281/zenodo.19054891)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Official code and reproducibility package for the paper:
@@ -641,9 +641,10 @@ All pairwise accuracy comparisons use paired bootstrap 95% CIs (exact 27-point e
   author  = {Banđur, Đoko and Banđur, Miloš and Jakšić, Branimir},
   year    = {2026},
   note    = {Preprint},
-  doi     = {10.5281/zenodo.19063156}
+  doi     = {10.5281/zenodo.19054891}
 }
 ```
+The DOI `10.5281/zenodo.19054891` is the Zenodo concept DOI and resolves to the latest version of the repository release.
 
 ## License
 
