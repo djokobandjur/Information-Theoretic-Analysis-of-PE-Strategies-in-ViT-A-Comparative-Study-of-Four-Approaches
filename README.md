@@ -11,7 +11,7 @@ Official code and reproducibility package for the paper:
 >
 > Department of Electrical Engineering, Faculty of Technical Sciences, University of Priština – Kosovska Mitrovica
 >
-> *Preprint, 2026* · [doi:10.5281/zenodo.19063156](https://doi.org/10.5281/zenodo.19063156)
+> *Preprint, 2026* · [doi:10.5281/zenodo.19054891](https://doi.org/10.5281/zenodo.19054891)
 
 > **Scope of this repository.** This repo contains everything required to **reproduce the results**: the training/analysis code, the per-run notebooks, and the raw result files (JSON/CSV) behind every reported table and figure. It deliberately does **not** include the manuscript, the supplementary material, or the response to reviewers. Because the study trains **76 ViT-Base models** (~344 MB each), the trained weights are also not stored in the repository: for each of the 76 models we provide its best checkpoint (`best_model.pth`) and full training history (which records the per-epoch metrics) on Google Drive, linked below. Full-scale ImageNet-1K from-scratch evaluation is outside the methodological scope of the study: the release is designed to reproduce the controlled PE-mechanism comparisons reported for CIFAR-100, TinyImageNet, and ImageNet-100, not a recipe-dependent ImageNet-1K scale-up benchmark.
 
@@ -169,7 +169,7 @@ compute_mi_cls_controls.py         # analysis/JSON-generation helper for Figure 
 #   fig5b_intrinsic_structure (S3), fig4a_embedding_entropy (S4),
 #   fig5a_embedding_variance (Fig 2), fig4b_intrinsic_entropy (S5)
 Trained models_ImageNet100/{learned,sinusoidal,rope,alibi,alibi_2d}_seed42/best_model.pth
-full_scale_experiment_v2.py
+full_scale_experiment_v2.py  # generated locally by apply_2d_alibi_patch.py
 
 # fig_main_mi_control panel (a) [Figure 3a]  (also the standalone 06_mutual_information)
 revision_results/imagenet100/_aggregate.json
@@ -601,13 +601,15 @@ torch>=2.0
 torchvision
 timm
 numpy
-scikit-learn
 scipy
+pandas
+scikit-learn
 matplotlib
 tqdm
+Pillow
 ```
 
-Experiments were run on a single **NVIDIA RTX 6000 Pro Blackwell (96 GB)** GPU per run with **PyTorch 2.1**; random seeds control PyTorch, NumPy, and the CUDA RNG state.
+The revision experiments and reruns were executed on a single **NVIDIA RTX 6000 Pro Blackwell (96 GB)** GPU per run with **PyTorch 2.1**; random seeds control PyTorch, NumPy, and the CUDA RNG state.
 
 ## Diagnostic Suite
 
