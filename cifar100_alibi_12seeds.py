@@ -1,20 +1,20 @@
 """
 cifar100_alibi_12seeds.py
 =========================
-Re-trains 1D-ALiBi AND 2D-ALiBi on CIFAR-100 across 12 fresh seeds, under
+Re-trains 1D-ALiBi-style AND 2D-ALiBi-style on CIFAR-100 across 12 seeds, under
 a SINGLE canonical training protocol so that per-seed pairs are
-bit-for-bit comparable (same code, same RNG sequence, the ONLY difference
-being the distance metric in the attention bias).
+protocol-matched and directly comparable (same code path, same seed set,
+and the intended difference being the distance metric in the attention bias).
 
 Why this exists
 ---------------
-The original CIFAR-100 1D-ALiBi was trained via cifar100_experiment.py
+The original CIFAR-100 1D-ALiBi-style run was trained via cifar100_experiment.py
 (with grad-clip 1.0, no torch.compile, no cuda.manual_seed_all). The
-original CIFAR-100 2D-ALiBi was trained via cifar100_2d_alibi_only.py
+original CIFAR-100 2D-ALiBi-style run was trained via cifar100_2d_alibi_only.py
 (no grad-clip, with torch.compile, with cuda.manual_seed_all). The
-manuscript claims the only difference between 1D and 2D ALiBi is the
-distance metric -- this script makes that literally true by running both
-through identical code.
+manuscript comparison requires the only intended intervention between
+1D and 2D ALiBi-style to be the distance metric; this script enforces that
+by running both variants through the same canonical code path.
 
 The canonical protocol (frozen for ALL 24 runs):
   - grad-clip 1.0  (as the manuscript describes for 1D-ALiBi)
@@ -27,14 +27,15 @@ The canonical protocol (frozen for ALL 24 runs):
 Output
 ------
 /content/drive/My Drive/pe_experiment/results_cifar100_v2/
-    alibi_seed{N}/best_model.pth, training_history.json       (1D-ALiBi)
-    alibi_2d_seed{N}/best_model.pth, training_history.json    (2D-ALiBi)
+    alibi_seed{N}/best_model.pth, training_history.json       (1D-ALiBi-style)
+    alibi_2d_seed{N}/best_model.pth, training_history.json    (2D-ALiBi-style)
+    _alibi_12seeds_summary.json
 
 Old results in results_cifar100/ are NOT touched.
 
 Compute
 -------
-~3.7 h / seed x 24 runs. Has resume logic: any run already
+~3.7 h per run x 24 runs. Has resume logic: any run already
 completed (training_history.json with >= 300 epochs) is skipped, so this
 script can be interrupted and re-launched across multiple Colab sessions.
 
@@ -84,7 +85,9 @@ CIFAR_CONFIG = {
 }
 
 PE_TYPES = ['alibi', 'alibi_2d']   # 1D first, then 2D, per-seed paired
-SEEDS    = [42, 123, 456, 1, 5, 7, 11, 13, 21, 99, 2024, 31337]  # 12 fresh seeds
+SEEDS    = [42, 123, 456, 1, 5, 7, 11, 13, 21, 99, 2024, 31337]  # 12 canonical seeds
+
+SUMMARY_FILENAME = '_alibi_12seeds_summary.json'
 
 DRIVE_BASE  = '/content/drive/My Drive/pe_experiment'
 RESULTS_DIR = os.path.join(DRIVE_BASE, 'results_cifar100_v2')   # NEW dir
@@ -120,7 +123,6 @@ try:
     )
     # Verify 2D distance buffer exists and is the right shape
     assert hasattr(alibi_module, 'dist_2d'), "TwoDALiBi missing dist_2d buffer"
-    n_pos = CIFAR_CONFIG['patch_size']  # noqa: not used, but documents grid
     expected_N = (CIFAR_CONFIG['img_size'] // CIFAR_CONFIG['patch_size']) ** 2 + 1
     assert alibi_module.dist_2d.shape[-1] == expected_N, (
         f"dist_2d has shape {alibi_module.dist_2d.shape}, expected last "
@@ -368,7 +370,7 @@ if __name__ == '__main__':
 
             # Save summary incrementally after each run
             with open(os.path.join(RESULTS_DIR,
-                                    '_alibi_10seeds_summary.json'), 'w') as f:
+                                    SUMMARY_FILENAME), 'w') as f:
                 json.dump(summary, f, indent=2)
 
     # ----- Final summary -----
@@ -384,7 +386,7 @@ if __name__ == '__main__':
                   f"({t:.1f}h, {info.get('status', '?')})")
 
     with open(os.path.join(RESULTS_DIR,
-                            '_alibi_10seeds_summary.json'), 'w') as f:
+                            SUMMARY_FILENAME), 'w') as f:
         json.dump(summary, f, indent=2)
     print(f"\nSummary written to "
-          f"{os.path.join(RESULTS_DIR, '_alibi_10seeds_summary.json')}")
+          f"{os.path.join(RESULTS_DIR, SUMMARY_FILENAME)}")
