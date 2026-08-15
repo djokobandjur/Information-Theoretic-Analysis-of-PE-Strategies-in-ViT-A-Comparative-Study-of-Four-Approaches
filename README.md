@@ -682,13 +682,13 @@ python verify_three_arm_decomposition.py revision_results/three_arm_decompositio
 
 ```bibtex
 @misc{bandjur2026information,
-  title   = {Information-Theoretic Analysis of Positional Encoding Strategies
-             in Vision Transformers: Major Revision Reproducibility Release},
-  author  = {Banđur, Đoko and Banđur, Miloš and Jakšić, Branimir},
-  year    = {2026},
-  version = {v2.0.0},
+  title     = {Information-Theoretic Analysis of Positional Encoding Strategies
+               in Vision Transformers: TPAMI Minor Revision Reproducibility Release},
+  author    = {Banđur, Đoko and Banđur, Miloš and Jakšić, Branimir},
+  year      = {2026},
+  version   = {v2.1.0},
   publisher = {Zenodo},
-  doi     = {10.5281/zenodo.21127035}
+  doi       = {10.5281/zenodo.19054891}
 }
 ```
 The DOI `10.5281/zenodo.21127035` identifies the specific v2.0.0 major-revision release.
