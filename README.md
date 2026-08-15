@@ -393,7 +393,8 @@ Information-Theoretic-Analysis-of-PE-Strategies-in-ViT-A-Comparative-Study-of-Fo
 │   ├── probe_summary.csv                             # summary derived from per_seed_probe_results.csv
 │   └── probe_table_supp.tex                          # LaTeX table generated from the merged summary
 ├── revision_results/
-│   ├── _master_summary.json                  # master exploratory summary across ImageNet-100, CIFAR-100, and TinyImageNet
+│   ├── three_arm_decomposition.json           # TPAMI R2 canonical three-arm paired analysis
+│   ├── _master_summary.json                   # master exploratory summary across ImageNet-100, CIFAR-100, and TinyImageNet
 │   ├── imagenet100/
 │   │   └── _aggregate.json
 │   ├── cifar100/
@@ -405,6 +406,7 @@ Information-Theoretic-Analysis-of-PE-Strategies-in-ViT-A-Comparative-Study-of-Fo
 │       │   └── paired_alibi_mi_summary.json
 │       └── cifar100_canonical_matched2d_n12/
 │           └── paired_alibi_mi_summary.json
+├── verify_three_arm_decomposition.py          # Recomputes and verifies the R2 three-arm statistics
 ├── figures_revision/
 │   ├── fig_main_mi_control.png
 │   ├── fig_main_mi_control.pdf
@@ -642,6 +644,38 @@ A **two-track** framework matched to the architecture of each PE family:
 11. **Cross-dataset validation & scaling patterns**
 
 All pairwise accuracy comparisons use paired bootstrap 95% CIs (exact 27-point enumeration at *n* = 3; 10,000 resamples and a paired *t*-test at *n* = 12), with the Wilcoxon signed-rank and sign tests as secondary checks.
+
+## TPAMI R2 Three-Arm Analysis (v2.1.0)
+
+The TPAMI minor revision adds a secondary paired analysis of the existing
+canonical CIFAR-100 three-arm ALiBi-style cohort; no new models were trained.
+
+The machine-readable artifact
+`revision_results/three_arm_decomposition.json` contains the aligned 12-seed
+validation accuracies for:
+
+- 1D-ALiBi-style,
+- fixed-slope 2D-ALiBi-style, and
+- mean-magnitude-matched 2D-ALiBi-style.
+
+It also records the three paired accuracy contrasts:
+
+- **C1:** fixed-slope 2D minus 1D — the pre-specified primary endpoint;
+- **C2:** magnitude-matched 2D minus 1D — a secondary post-hoc
+  matched-magnitude 2D-vs-1D contrast;
+- **C3:** magnitude-matched 2D minus fixed-slope 2D — a secondary post-hoc
+  within-2D magnitude-rescaling contrast.
+
+C2 and C3 form the secondary multiplicity family and are corrected using
+Holm--Bonferroni. Their 10,000-resample paired-bootstrap intervals use
+`numpy.random.default_rng(PCG64)` with RNG seed `20260814`.
+The reported validation accuracy for each run is the best validation accuracy
+over its 300-epoch training history, `max(val_acc)`.
+
+The artifact can be independently checked from the repository root with:
+
+```bash
+python verify_three_arm_decomposition.py revision_results/three_arm_decomposition.json
 
 ## Citation
 
