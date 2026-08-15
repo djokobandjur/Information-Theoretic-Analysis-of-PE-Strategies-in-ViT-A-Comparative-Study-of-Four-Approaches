@@ -1,0 +1,300 @@
+{
+  "schema_version": "1.0",
+  "analysis_name": "TPAMI R2 canonical CIFAR-100 three-arm accuracy analysis",
+  "analysis_date": "2026-08-14",
+  "no_new_models_trained": true,
+  "metric": "best validation accuracy (%) = max(val_acc) per 300-epoch training history",
+  "seed_order": [
+    1,
+    5,
+    7,
+    11,
+    13,
+    21,
+    42,
+    99,
+    123,
+    456,
+    2024,
+    31337
+  ],
+  "source_provenance": {
+    "1d": "12 canonical training_history_1D_<seed>.json logs; cross-checked against alibi_1d_vs_2d_accuracy_audit.md",
+    "2d_fixed": "12 canonical training_history_2D_<seed>.json logs; cross-checked against fixed_2dalibi_accuracy_audit.md",
+    "2d_matched": "12 training_history - alibi_2d_matched_seed<seed>.json logs; cross-checked against matched_2dalibi_accuracy_audit.md"
+  },
+  "arm_summaries": {
+    "1d": {
+      "mean": 67.8875,
+      "sample_sd": 0.3349389360899854
+    },
+    "2d_fixed": {
+      "mean": 68.34166666666667,
+      "sample_sd": 0.3419152827910167
+    },
+    "2d_matched": {
+      "mean": 70.28333333333333,
+      "sample_sd": 0.34683853548440774
+    }
+  },
+  "contrasts": {
+    "C1": {
+      "label": "2D fixed - 1D",
+      "status": "pre-specified primary endpoint",
+      "stats": {
+        "n": 12,
+        "mean_difference_pp": 0.4541666666666657,
+        "sd_paired_differences_pp": 0.5349504366733148,
+        "paired_t": {
+          "t": 2.940981772676825,
+          "df": 11,
+          "p_two_sided_raw": 0.013424155836118116,
+          "ci95_t_pp": [
+            0.11427537498015256,
+            0.7940579583531788
+          ]
+        },
+        "wilcoxon_exact_two_sided": {
+          "statistic": 9.0,
+          "p": 0.01611328125
+        },
+        "sign_test_exact_two_sided": {
+          "positive": 10,
+          "negative": 2,
+          "zero": 0,
+          "p": 0.03857421875
+        },
+        "cohens_dz": 0.8489883090683739
+      }
+    },
+    "C2": {
+      "label": "2D matched - 1D",
+      "status": "secondary post-hoc matched-magnitude 2D-vs-1D contrast",
+      "stats": {
+        "n": 12,
+        "mean_difference_pp": 2.395833333333332,
+        "sd_paired_differences_pp": 0.47339121498422604,
+        "paired_t": {
+          "t": 17.531821159540133,
+          "df": 11,
+          "p_two_sided_raw": 2.1847711409329024e-09,
+          "ci95_t_pp": [
+            2.0950549050837326,
+            2.6966117615829317
+          ],
+          "p_holm_secondary_family": 4.369542281865805e-09
+        },
+        "wilcoxon_exact_two_sided": {
+          "statistic": 0.0,
+          "p": 0.00048828125
+        },
+        "sign_test_exact_two_sided": {
+          "positive": 12,
+          "negative": 0,
+          "zero": 0,
+          "p": 0.00048828125
+        },
+        "paired_bootstrap": {
+          "resamples": 10000,
+          "rng": "numpy.random.default_rng(PCG64)",
+          "rng_seed": 20260814,
+          "ci95_percentile_pp": [
+            2.1391458333333313,
+            2.6483541666666643
+          ]
+        },
+        "cohens_dz": 5.061000832922437
+      }
+    },
+    "C3": {
+      "label": "2D matched - 2D fixed",
+      "status": "secondary post-hoc within-2D magnitude-rescaling contrast",
+      "stats": {
+        "n": 12,
+        "mean_difference_pp": 1.9416666666666664,
+        "sd_paired_differences_pp": 0.5888792642628773,
+        "paired_t": {
+          "t": 11.421917945231938,
+          "df": 11,
+          "p_two_sided_raw": 1.9291090897703129e-07,
+          "ci95_t_pp": [
+            1.567510632656465,
+            2.315822700676868
+          ],
+          "p_holm_secondary_family": 1.9291090897703129e-07
+        },
+        "wilcoxon_exact_two_sided": {
+          "statistic": 0.0,
+          "p": 0.00048828125
+        },
+        "sign_test_exact_two_sided": {
+          "positive": 12,
+          "negative": 0,
+          "zero": 0,
+          "p": 0.00048828125
+        },
+        "paired_bootstrap": {
+          "resamples": 10000,
+          "rng": "numpy.random.default_rng(PCG64)",
+          "rng_seed": 20260814,
+          "ci95_percentile_pp": [
+            1.6183124999999978,
+            2.2516875000000005
+          ]
+        },
+        "cohens_dz": 3.2972237001707385
+      }
+    }
+  },
+  "multiplicity": {
+    "secondary_family": [
+      "C2",
+      "C3"
+    ],
+    "method": "Holm-Bonferroni",
+    "note": "Holm controls family-wise error under arbitrary dependence; C1 remains the pre-specified primary endpoint and is not retroactively included in the secondary family."
+  },
+  "provenance_check": {
+    "R1_primary_endpoint_reproduced": true,
+    "R1_reported_rounded": {
+      "t": 2.94,
+      "p": 0.013,
+      "ci95_t_pp": [
+        0.11,
+        0.79
+      ],
+      "wilcoxon_p": 0.016,
+      "sign_test_p": 0.039
+    },
+    "recomputed_from_seed_aligned_values": {
+      "t": 2.940981772676825,
+      "p": 0.013424155836118116,
+      "ci95_t_pp": [
+        0.11427537498015256,
+        0.7940579583531788
+      ],
+      "wilcoxon_p": 0.01611328125,
+      "sign_test_p": 0.03857421875
+    },
+    "C1_bootstrap_policy": "C1 paired-bootstrap CI is intentionally omitted from this R2 secondary-analysis artifact. The manuscript and Supplement S11 retain the previously reported R1 10,000-resample paired-bootstrap CI [+0.16,+0.75] pp; RNG seed 20260814 applies only to the newly computed C2/C3 bootstraps."
+  },
+  "interpretation_guards": {
+    "C3": "Better-identified magnitude manipulation: same 2D geometry, same [CLS] handling and training protocol; differs by global slope rescaling.",
+    "C2": "Not a pure geometry isolation: only mean absolute patch-patch bias magnitude is matched; full distance-distribution shape and [CLS] handling still differ.",
+    "rounding": "Contrast values are computed from unrounded per-seed accuracies; do not assert an arithmetic identity using rounded prose values."
+  },
+  "software": {
+    "numpy": "2.3.5",
+    "scipy": "1.17.0"
+  },
+  "per_seed": [
+    {
+      "seed": 1,
+      "accuracy_1d": 68.06,
+      "accuracy_2d_fixed": 68.62,
+      "accuracy_2d_matched": 70.38,
+      "C1_fixed_minus_1d_pp": 0.5600000000000023,
+      "C2_matched_minus_1d_pp": 2.319999999999993,
+      "C3_matched_minus_fixed_pp": 1.759999999999991
+    },
+    {
+      "seed": 5,
+      "accuracy_1d": 67.72,
+      "accuracy_2d_fixed": 68.19,
+      "accuracy_2d_matched": 70.49,
+      "C1_fixed_minus_1d_pp": 0.46999999999999886,
+      "C2_matched_minus_1d_pp": 2.769999999999996,
+      "C3_matched_minus_fixed_pp": 2.299999999999997
+    },
+    {
+      "seed": 7,
+      "accuracy_1d": 68.16,
+      "accuracy_2d_fixed": 67.76,
+      "accuracy_2d_matched": 70.73,
+      "C1_fixed_minus_1d_pp": -0.3999999999999915,
+      "C2_matched_minus_1d_pp": 2.5700000000000074,
+      "C3_matched_minus_fixed_pp": 2.969999999999999
+    },
+    {
+      "seed": 11,
+      "accuracy_1d": 67.2,
+      "accuracy_2d_fixed": 68.38,
+      "accuracy_2d_matched": 70.38,
+      "C1_fixed_minus_1d_pp": 1.1799999999999926,
+      "C2_matched_minus_1d_pp": 3.1799999999999926,
+      "C3_matched_minus_fixed_pp": 2.0
+    },
+    {
+      "seed": 13,
+      "accuracy_1d": 68.18,
+      "accuracy_2d_fixed": 68.0,
+      "accuracy_2d_matched": 70.22,
+      "C1_fixed_minus_1d_pp": -0.18000000000000682,
+      "C2_matched_minus_1d_pp": 2.039999999999992,
+      "C3_matched_minus_fixed_pp": 2.219999999999999
+    },
+    {
+      "seed": 21,
+      "accuracy_1d": 67.58,
+      "accuracy_2d_fixed": 68.21,
+      "accuracy_2d_matched": 70.52,
+      "C1_fixed_minus_1d_pp": 0.6299999999999955,
+      "C2_matched_minus_1d_pp": 2.9399999999999977,
+      "C3_matched_minus_fixed_pp": 2.3100000000000023
+    },
+    {
+      "seed": 42,
+      "accuracy_1d": 68.31,
+      "accuracy_2d_fixed": 68.48,
+      "accuracy_2d_matched": 70.14,
+      "C1_fixed_minus_1d_pp": 0.1700000000000017,
+      "C2_matched_minus_1d_pp": 1.8299999999999983,
+      "C3_matched_minus_fixed_pp": 1.6599999999999966
+    },
+    {
+      "seed": 99,
+      "accuracy_1d": 67.74,
+      "accuracy_2d_fixed": 68.78,
+      "accuracy_2d_matched": 70.43,
+      "C1_fixed_minus_1d_pp": 1.0400000000000063,
+      "C2_matched_minus_1d_pp": 2.690000000000012,
+      "C3_matched_minus_fixed_pp": 1.6500000000000057
+    },
+    {
+      "seed": 123,
+      "accuracy_1d": 68.28,
+      "accuracy_2d_fixed": 68.33,
+      "accuracy_2d_matched": 70.01,
+      "C1_fixed_minus_1d_pp": 0.04999999999999716,
+      "C2_matched_minus_1d_pp": 1.730000000000004,
+      "C3_matched_minus_fixed_pp": 1.6800000000000068
+    },
+    {
+      "seed": 456,
+      "accuracy_1d": 67.71,
+      "accuracy_2d_fixed": 69.0,
+      "accuracy_2d_matched": 69.77,
+      "C1_fixed_minus_1d_pp": 1.2900000000000063,
+      "C2_matched_minus_1d_pp": 2.0600000000000023,
+      "C3_matched_minus_fixed_pp": 0.769999999999996
+    },
+    {
+      "seed": 2024,
+      "accuracy_1d": 68.03,
+      "accuracy_2d_fixed": 68.1,
+      "accuracy_2d_matched": 70.71,
+      "C1_fixed_minus_1d_pp": 0.06999999999999318,
+      "C2_matched_minus_1d_pp": 2.6799999999999926,
+      "C3_matched_minus_fixed_pp": 2.6099999999999994
+    },
+    {
+      "seed": 31337,
+      "accuracy_1d": 67.68,
+      "accuracy_2d_fixed": 68.25,
+      "accuracy_2d_matched": 69.62,
+      "C1_fixed_minus_1d_pp": 0.5699999999999932,
+      "C2_matched_minus_1d_pp": 1.9399999999999977,
+      "C3_matched_minus_fixed_pp": 1.3700000000000045
+    }
+  ]
+}
