@@ -676,6 +676,7 @@ The artifact can be independently checked from the repository root with:
 
 ```bash
 python verify_three_arm_decomposition.py revision_results/three_arm_decomposition.json
+```
 
 ## Citation
 
