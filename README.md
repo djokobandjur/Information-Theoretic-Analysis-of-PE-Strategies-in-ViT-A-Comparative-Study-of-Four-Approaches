@@ -678,6 +678,12 @@ The artifact can be independently checked from the repository root with:
 python verify_three_arm_decomposition.py revision_results/three_arm_decomposition.json
 ```
 
+A successful verification terminates with:
+
+```text
+ALL CHECKS PASSED
+```
+
 ## Citation
 
 ```bibtex
@@ -691,8 +697,9 @@ python verify_three_arm_decomposition.py revision_results/three_arm_decompositio
   doi       = {10.5281/zenodo.19054891}
 }
 ```
-The DOI `10.5281/zenodo.21127035` identifies the specific v2.0.0 major-revision release.
-The DOI `10.5281/zenodo.19054891` is the Zenodo concept DOI and resolves to the latest version of the repository release.
+The DOI `10.5281/zenodo.19054891` is the persistent Zenodo concept DOI and
+resolves to the latest version of the repository release. Zenodo assigns a
+separate version-specific DOI when each release is published.
 
 ## License
 
